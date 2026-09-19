@@ -116,36 +116,55 @@ namespace CapaControlador_Navegador
 
         // Valida dinámicamente los atributos existentes en cualquier esquema ODBC.
         public List<string> NavegadorFuncValidarRegistro(
-            Dictionary<string, string> Datos,
-            string NombreTabla)
+    Dictionary<string, string> Datos,
+    string NombreTabla)
+{
+    NavegadorMetValidarNombreTabla(NombreTabla);
+    NavegadorMetValidarColeccion(Datos, "datos");
+
+    List<string> Errores = new List<string>();
+    List<ClsColumnaInfo> Columnas =
+        _Esquema.NavegadorFuncObtenerEsquemaTabla(NombreTabla);
+
+    if (Columnas == null || Columnas.Count == 0)
+        throw new InvalidOperationException("No se encontró el esquema de la tabla.");
+
+    foreach (KeyValuePair<string, string> Dato in Datos)
+    {
+        ClsColumnaInfo Columna = Columnas.Find(Item =>
+            string.Equals(Item.Nombre, Dato.Key, StringComparison.OrdinalIgnoreCase));
+
+        if (Columna == null)
         {
-            NavegadorMetValidarNombreTabla(NombreTabla);
-            NavegadorMetValidarColeccion(Datos, "datos");
-
-            List<string> Errores = new List<string>();
-            List<ClsColumnaInfo> Columnas =
-                _Esquema.NavegadorFuncObtenerEsquemaTabla(NombreTabla);
-
-            if (Columnas == null || Columnas.Count == 0)
-                throw new InvalidOperationException("No se encontró el esquema de la tabla.");
-
-            foreach (KeyValuePair<string, string> Dato in Datos)
-            {
-                ClsColumnaInfo Columna = Columnas.Find(Item =>
-                    string.Equals(Item.Nombre, Dato.Key, StringComparison.OrdinalIgnoreCase));
-
-                if (Columna == null)
-                {
-                    Errores.Add("El atributo '" + Dato.Key + "' no existe en la tabla.");
-                    continue;
-                }
-
-                string Error = NavegadorFuncValidarAtributo(Dato.Value, Columna);
-                if (!string.IsNullOrEmpty(Error)) Errores.Add(Error);
-            }
-
-            return Errores;
+            Errores.Add("El atributo '" + Dato.Key + "' no existe en la tabla.");
+            continue;
         }
+
+        string Error = NavegadorFuncValidarAtributo(Dato.Value, Columna);
+        if (!string.IsNullOrEmpty(Error)) Errores.Add(Error);
+
+        // Validar Llaves Foráneas directamente desde el controlador
+        if (Columna.EsFK && !string.IsNullOrWhiteSpace(Dato.Value) &&
+            !string.IsNullOrWhiteSpace(Columna.TablaFK) && !string.IsNullOrWhiteSpace(Columna.ColumnaFK))
+        {
+            try
+            {
+                bool ExisteFK = _Registros.NavegadorFuncExisteValorCampo(Columna.TablaFK, Columna.ColumnaFK, Dato.Value);
+                if (!ExisteFK)
+                {
+                    Errores.Add("La llave foránea '" + Columna.Nombre + "' con valor '" + Dato.Value +
+                        "' no existe en '" + Columna.TablaFK + "." + Columna.ColumnaFK + "'.");
+                }
+            }
+            catch (Exception)
+            {
+                // Si falla la consulta a la BD no bloqueamos al controlador
+            }
+        }
+    }
+
+    return Errores;
+}
 
         // Valida nulabilidad, longitud y tipo usando los metadatos reales de la columna.
         public string NavegadorFuncValidarAtributo(string Valor, ClsColumnaInfo Columna)

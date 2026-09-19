@@ -4,7 +4,6 @@
 // Fecha:         16/09/2026
 // Módulo:        CapaVista_Navegador
 // Descripción:   Gestor de acciones CRUD (Insertar, Modificar, Eliminar) con
-//                validaciones previas de integridad referencial, duplicidad y
 //                traducción de excepciones de base de datos a mensajes legibles.
 // ============================================================================
 
@@ -14,8 +13,8 @@ using System.Windows.Forms;
 using CapaControlador_Navegador;
 // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 // Estos dos using son para poder usar la clase de bitácora (auditoría) del componente Seguridad.
-using CapaControlador_Seguridad;
-using CapaControlador_Seguridad.Objetos_de_valor;
+//using CapaControlador_Seguridad;
+//using CapaControlador_Seguridad.Objetos_de_valor;
 // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 using CapaEntidades_Navegador;
 
@@ -26,34 +25,14 @@ namespace CapaVista_Navegador
         private ClsCtrlRegistro _CtrlRegistro = new ClsCtrlRegistro();
 
         // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
-        // Bitácora de Seguridad: deja rastro de Insertar/Modificar/Eliminar. Se usa el método de
-        // instancia con IdUsuario explícito porque el método estático SeguridadMetRegistrarAccion usa
-        // una clase de sesión distinta (ClsSesion) que queda fija en el usuario 1.
-        private ClsModeloBitacora _Bitacora = new ClsModeloBitacora();
+        //private ClsModeloBitacora _Bitacora = new ClsModeloBitacora();
         // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 
-        // ====================================================================
-        // Función:      NavegadorFuncConfirmarAccion
-        // Descripción:  Muestra un cuadro de diálogo modal con opciones Sí/No 
-        //               para requerir confirmación explícita del usuario antes
-        //               de ejecutar una acción crítica (guardar, editar, eliminar).
-        // Parámetros:   - Titulo: Encabezado de la ventana de diálogo.
-        //               - Mensaje: Contenido descriptivo de la confirmación.
-        // Retorna:      True si el usuario hace clic en 'Sí', False en caso contrario.
-        // ====================================================================
         public bool NavegadorFuncConfirmarAccion(string Titulo, string Mensaje)
         {
             return MessageBox.Show(Mensaje, Titulo, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncResumenDatos
-        // Descripción:  Recorre un diccionario de pares clave-valor y construye
-        //               una cadena formateada con saltos de línea para listar
-        //               los campos y sus datos en los diálogos de confirmación.
-        // Parámetros:   - Datos: Diccionario con los nombres de campos y valores.
-        // Retorna:      Cadena de texto formateada ("Campo: Valor\n...").
-        // ====================================================================
         private string NavegadorFuncResumenDatos(Dictionary<string, string> Datos)
         {
             string Resumen = "";
@@ -64,23 +43,6 @@ namespace CapaVista_Navegador
             return Resumen;
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncGuardar
-        // Descripción:  Punto de entrada principal para persistir un registro.
-        //               Filtra campos según el esquema (omite autoincrementables
-        //               al insertar o llaves primarias al modificar), valida 
-        //               nulabilidad obligatoria, reglas de negocio del controlador
-        //               y existencia de llaves foráneas antes de delegar la 
-        //               inserción o actualización.
-        // Parámetros:   - Tabla: Nombre de la tabla destino.
-        //               - Esquema: Definición de columnas, tipos y restricciones.
-        //               - DatosFormulario: Claves y valores capturados en la vista.
-        //               - ModoModificar: True si es actualización, False si es inserción.
-        //               - PkOriginal: Diccionario con la clave primaria original.
-        //               - Mensaje: Parámetro de salida con advertencias o errores.
-        // Retorna:      True si la operación fue exitosa; False si falló una 
-        //               validación o el guardado.
-        // ====================================================================
         public bool NavegadorFuncGuardar(string Tabla, List<ClsColumnaInfo> Esquema, Dictionary<string, string> DatosFormulario,
             bool ModoModificar, Dictionary<string, string> PkOriginal, out string Mensaje)
         {
@@ -99,25 +61,11 @@ namespace CapaVista_Navegador
                 if (ModoModificar && Columna.EsPK)
                     continue;
 
-                string Valor = DatosFormulario[Columna.Nombre];
-
-                if (string.IsNullOrWhiteSpace(Valor))
-                {
-                    if (!Columna.Nullable)
-                    {
-                        Mensaje = "El campo '" + Columna.Nombre + "' es obligatorio.";
-                        return false;
-                    }
-
-                    continue;
-                }
-
-                Datos[Columna.Nombre] = Valor;
+                Datos[Columna.Nombre] = DatosFormulario[Columna.Nombre];
             }
 
+            // Delegación completa de validación (nulos, tipos e integridad) a la Capa Controlador
             List<string> Errores = _CtrlRegistro.NavegadorFuncValidarRegistro(Datos, Tabla);
-
-            Errores.AddRange(NavegadorFuncValidarLlavesForaneas(Tabla, Esquema, Datos));
 
             if (Errores.Count > 0)
             {
@@ -131,74 +79,6 @@ namespace CapaVista_Navegador
             return NavegadorFuncModificar(Tabla, Datos, PkOriginal, out Mensaje);
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncValidarLlavesForaneas
-        // Descripción:  Verifica la integridad referencial de los campos FK 
-        //               comprobando que el valor ingresado exista previamente en
-        //               la tabla padre configurada. Omite validación si los 
-        //               metadatos están incompletos, si apuntan a la misma tabla 
-        //               o si la consulta remota falla (dejando el control final al motor BD).
-        // Parámetros:   - Tabla: Nombre de la tabla que contiene las FK.
-        //               - Esquema: Lista de metadatos de las columnas.
-        //               - Datos: Valores actuales capturados para la inserción/edición.
-        // Retorna:      Lista de cadenas con los errores de FK no encontradas.
-        // ====================================================================
-        private List<string> NavegadorFuncValidarLlavesForaneas(string Tabla, List<ClsColumnaInfo> Esquema, Dictionary<string, string> Datos)
-        {
-            List<string> Errores = new List<string>();
-
-            foreach (ClsColumnaInfo Columna in Esquema)
-            {
-                if (!Columna.EsFK)
-                    continue;
-
-                // Metadato incompleto: no hay a donde validar
-                if (string.IsNullOrWhiteSpace(Columna.TablaFK) || string.IsNullOrWhiteSpace(Columna.ColumnaFK))
-                    continue;
-
-                // Metadato sospechoso: la FK apunta a la propia tabla que se esta editando
-                if (string.Equals(Columna.TablaFK, Tabla, StringComparison.OrdinalIgnoreCase))
-                    continue;
-
-                string ValorFK;
-                if (!Datos.TryGetValue(Columna.Nombre, out ValorFK) || string.IsNullOrWhiteSpace(ValorFK))
-                    continue;
-
-                bool Existe;
-
-                try
-                {
-                    Existe = _CtrlRegistro.NavegadorFuncExisteValorCampo(Columna.TablaFK, Columna.ColumnaFK, ValorFK);
-                }
-                catch (Exception)
-                {
-                    // Si no se pudo consultar la tabla padre no se bloquea al Usuario;
-                    // la restriccion real la aplica la base de datos al insertar.
-                    continue;
-                }
-
-                if (!Existe)
-                {
-                    Errores.Add("La llave foránea '" + Columna.Nombre + "' con valor '" + ValorFK +
-                        "' no existe en '" + Columna.TablaFK + "." + Columna.ColumnaFK + "'.");
-                }
-            }
-
-            return Errores;
-        }
-
-        // ====================================================================
-        // Función:      NavegadorFuncInsertar
-        // Descripción:  Gestiona la inserción de un nuevo registro. Identifica
-        //               las claves primarias del esquema para comprobar que no
-        //               existan duplicados en la base de datos, solicita la
-        //               confirmación al usuario y envía los datos a la capa controladora.
-        // Parámetros:   - Tabla: Nombre de la tabla objetivo.
-        //               - Esquema: Metadatos de las columnas de la tabla.
-        //               - Datos: Diccionario con las columnas y valores validados.
-        //               - Mensaje: Parámetro de salida con detalles en caso de error.
-        // Retorna:      True si el registro se insertó con éxito, False en caso contrario.
-        // ====================================================================
         private bool NavegadorFuncInsertar(string Tabla, List<ClsColumnaInfo> Esquema, Dictionary<string, string> Datos, out string Mensaje)
         {
             Mensaje = "";
@@ -250,9 +130,6 @@ namespace CapaVista_Navegador
                 return false;
 
             // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
-            // Primero se inserta el registro tal como ya funcionaba. Si se insertó bien, se calcula
-            // qué id usar para la bitácora (el de la llave primaria si ya se conoce, si no 0 porque
-            // es autoincremento) y se registra la acción "INSERT" con los datos que se guardaron.
             bool Insertado = _CtrlRegistro.NavegadorFuncInsertarRegistro(Tabla, Datos);
 
             if (Insertado)
@@ -261,27 +138,15 @@ namespace CapaVista_Navegador
                 if (ValoresPK.Count > 0)
                     int.TryParse(ValoresPK[0], out IdRegistro);
 
-                _Bitacora.SeguridadMetRegistrarBitacora(
-                    ClsSesionSeguridad.IdUsuario, "INSERT", Tabla, IdRegistro,
-                    "Se insertó un registro en " + Tabla + ": " + NavegadorFuncResumenDatos(Datos), null);
+                //_Bitacora.SeguridadMetRegistrarBitacora(
+                //    ClsSesionSeguridad.IdUsuario, "INSERT", Tabla, IdRegistro,
+                //    "Se insertó un registro en " + Tabla + ": " + NavegadorFuncResumenDatos(Datos), null);
             }
 
             return Insertado;
             // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncModificar
-        // Descripción:  Ejecuta la actualización de un registro existente. Valida
-        //               que existan campos a modificar y llaves primarias válidas
-        //               para la cláusula WHERE, solicita confirmación visual al
-        //               usuario y envía la instrucción al controlador.
-        // Parámetros:   - Tabla: Nombre de la tabla a actualizar.
-        //               - Datos: Columnas con los nuevos valores a persistir.
-        //               - ClavesPrimarias: Diccionario con la clave primaria y su valor actual.
-        //               - Mensaje: Parámetro de salida con el motivo del fallo en caso de ocurrir.
-        // Retorna:      True si la actualización fue completada, False si fue cancelada o errónea.
-        // ====================================================================
         private bool NavegadorFuncModificar(string Tabla, Dictionary<string, string> Datos,
             Dictionary<string, string> ClavesPrimarias, out string Mensaje)
         {
@@ -305,8 +170,6 @@ namespace CapaVista_Navegador
                 return false;
 
             // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
-            // Igual que en Insertar: primero se actualiza el registro, y si salió bien, se registra
-            // la acción "UPDATE" en la bitácora. Aquí sí se conoce el id real porque ya existía.
             bool Actualizado = _CtrlRegistro.NavegadorFuncActualizarRegistro(Tabla, Datos, ClavesPrimarias);
 
             if (Actualizado)
@@ -314,26 +177,15 @@ namespace CapaVista_Navegador
                 int IdRegistro = 0;
                 foreach (string ValorPk in ClavesPrimarias.Values) { int.TryParse(ValorPk, out IdRegistro); break; }
 
-                _Bitacora.SeguridadMetRegistrarBitacora(
-                    ClsSesionSeguridad.IdUsuario, "UPDATE", Tabla, IdRegistro,
-                    "Se actualizó un registro en " + Tabla + ": " + NavegadorFuncResumenDatos(Datos), null);
+                //_Bitacora.SeguridadMetRegistrarBitacora(
+                //    ClsSesionSeguridad.IdUsuario, "UPDATE", Tabla, IdRegistro,
+                //    "Se actualizó un registro en " + Tabla + ": " + NavegadorFuncResumenDatos(Datos), null);
             }
 
             return Actualizado;
             // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncEliminar
-        // Descripción:  Elimina un registro específico. Valida la integridad y
-        //               existencia de la llave primaria seleccionada, solicita
-        //               la confirmación al usuario y envía la petición de borrado
-        //               al controlador.
-        // Parámetros:   - Tabla: Nombre de la tabla objetivo.
-        //               - ClavesPrimarias: Diccionario con las llaves primarias que identifican la fila.
-        //               - Mensaje: Parámetro de salida con mensajes de error si falla la validación.
-        // Retorna:      True si se eliminó el registro correctamente, False en caso contrario.
-        // ====================================================================
         public bool NavegadorFuncEliminar(string Tabla, Dictionary<string, string> ClavesPrimarias, out string Mensaje)
         {
             Mensaje = "";
@@ -358,8 +210,6 @@ namespace CapaVista_Navegador
                 return false;
 
             // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
-            // Igual que arriba: se elimina el registro y, si se pudo eliminar, se registra la
-            // acción "DELETE" en la bitácora con el id del registro que se borró.
             bool Eliminado = _CtrlRegistro.NavegadorFuncEliminarRegistro(Tabla, ClavesPrimarias);
 
             if (Eliminado)
@@ -367,25 +217,15 @@ namespace CapaVista_Navegador
                 int IdRegistro = 0;
                 foreach (string ValorPk in ClavesPrimarias.Values) { int.TryParse(ValorPk, out IdRegistro); break; }
 
-                _Bitacora.SeguridadMetRegistrarBitacora(
-                    ClsSesionSeguridad.IdUsuario, "DELETE", Tabla, IdRegistro,
-                    "Se eliminó un registro de " + Tabla + ".", null);
+                //_Bitacora.SeguridadMetRegistrarBitacora(
+                //    ClsSesionSeguridad.IdUsuario, "DELETE", Tabla, IdRegistro,
+                //    "Se eliminó un registro de " + Tabla + ".", null);
             }
 
             return Eliminado;
             // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
-        // ====================================================================
-        // Función:      NavegadorFuncMensajeAmigable
-        // Descripción:  Interpreta excepciones y mensajes nativos devueltos por
-        //               motores de bases de datos (MySQL, SQL Server, PostgreSQL, etc.)
-        //               y los traduce a explicaciones comprensibles para el usuario
-        //               final (errores de tabla, FK, llaves duplicadas, nulos o tipos).
-        // Parámetros:   - Excepcion: Objeto de excepción capturado durante la operación.
-        // Retorna:      Mensaje amigable en lenguaje común o el mensaje original
-        //               si no coincide con ningún patrón conocido.
-        // ====================================================================
         public string NavegadorFuncMensajeAmigable(Exception Excepcion)
         {
             string TextoMinusculas = (Excepcion.Message ?? "").ToLowerInvariant();
