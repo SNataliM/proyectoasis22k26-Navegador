@@ -22,7 +22,16 @@ namespace CapaControlador_Navegador
                 throw new Exception("Error al cargar la tabla '" + NombreTabla + "': " + Excepcion.Message, Excepcion);
             }
         }
+        public bool NavegadorFuncValidarLlavePrimariaUnica(string tabla, string campoLlave, string valorLlave)
+        {
+            if (string.IsNullOrWhiteSpace(valorLlave))
+            {
+                return false;
+            }
 
+            // Usa el método real de ClsRegistros
+            return !_Registros.NavegadorFuncExisteValorCampo(tabla, campoLlave, valorLlave);
+        }
         public List<string> NavegadorFuncObtenerTablas()
         {
             try

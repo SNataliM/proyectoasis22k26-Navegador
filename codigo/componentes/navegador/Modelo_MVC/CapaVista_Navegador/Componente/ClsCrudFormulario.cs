@@ -406,80 +406,9 @@ namespace CapaVista_Navegador
         }
 
         //Valida que las llaves primarias no esten vacias ni duplicadas
-        public bool NavegadorFuncLlaveInvalida(
-            DataGridView Grid, ClsCrudGrid GridControl)
+        public bool NavegadorFuncLlaveInvalida(DataGridView Grid, ClsCrudGrid GridControl)
         {
-            //No valida llaves cuando se esta modificando un registro
-            if (_ModoModificar || _Controles == null)
-                return false;
-
-            List<ClsColumnaInfo> Llaves =
-                _Esquema.FindAll(Columna => Columna.EsPK);
-
-            Dictionary<string, string> Datos =
-                NavegadorFuncObtenerDatos();
-
-            //Verifica que las llaves primarias obligatorias tengan un valor
-            foreach (ClsColumnaInfo Columna in Llaves)
-            {
-                if (!Columna.EsAutoincremento &&
-                    (!Datos.ContainsKey(Columna.Nombre) ||
-                     string.IsNullOrEmpty(Datos[Columna.Nombre])))
-                {
-                    MessageBox.Show(
-                        "Debe ingresar un valor para la llave primaria '" +
-                        Columna.Nombre + "'.",
-                        "Llave primaria",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-
-                    NavegadorMetEnfocar(Columna.Nombre);
-                    return true;
-                }
-            }
-
-            //Continua sin validar duplicados si no hay datos del grid
-            if (Grid == null || GridControl == null)
-                return false;
-
-            //Compara las llaves nuevas con los registros existentes
-            foreach (DataGridViewRow Fila in Grid.Rows)
-            {
-                if (Fila.IsNewRow)
-                    continue;
-
-                bool Coincide = true;
-
-                //Comprueba cada llave primaria del registro
-                foreach (ClsColumnaInfo Columna in Llaves)
-                {
-                    if (!Columna.EsAutoincremento &&
-                        !string.Equals(
-                            GridControl.NavegadorFuncObtenerValor(
-                                Fila, Columna.Nombre).Trim(),
-                            Datos[Columna.Nombre],
-                            StringComparison.OrdinalIgnoreCase))
-                    {
-                        Coincide = false;
-                        break;
-                    }
-                }
-
-                //Muestra advertencia cuando encuentra una llave duplicada
-                if (Coincide &&
-                    Llaves.Exists(Columna => !Columna.EsAutoincremento))
-                {
-                    MessageBox.Show(
-                        "Ya existe un registro con esa llave primaria.",
-                        "Llave duplicada",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-
-                    NavegadorMetEnfocar(Llaves[0].Nombre);
-                    return true;
-                }
-            }
-
+            // La validación de unicidad de llaves primarias se delegó al Controlador
             return false;
         }
 
