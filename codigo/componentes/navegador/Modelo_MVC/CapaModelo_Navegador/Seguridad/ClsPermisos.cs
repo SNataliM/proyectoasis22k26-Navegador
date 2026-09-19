@@ -17,12 +17,6 @@ namespace CapaModelo_Navegador
 
         public bool NavegadorFuncValidarAcceso(string Usuario, string Modulo)
         {
-            // Retorna falso si faltan datos de entrada
-            if (string.IsNullOrEmpty(Usuario) || string.IsNullOrEmpty(Modulo))
-            {
-                return false;
-            }
-
             try
             {
                 // TODO: Reemplazar retorno fijo por consulta SQL a la tabla de permisos
