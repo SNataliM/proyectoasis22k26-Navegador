@@ -23,6 +23,13 @@ namespace CapaControlador_Navegador
         //Este metodo recibe el usuario y devuelve si tiene acceso o no de manera booleana 
         public bool NavegadorFuncValidarAcceso(string Usuario, string Modulo)
         {
+            // Inicio Cambio Dylan Rene Hernandez Recinos 0901-23-519
+            // Valida que los datos de entrada no vengan vacíos 
+            if (string.IsNullOrEmpty(Usuario) || string.IsNullOrEmpty(Modulo))
+            {
+                return false;
+            }
+
             //Intenta que el modelo realice la validacion 
             try
             {

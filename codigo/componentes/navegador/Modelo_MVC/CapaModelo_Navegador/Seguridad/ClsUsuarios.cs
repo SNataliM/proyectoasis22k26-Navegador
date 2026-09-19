@@ -37,18 +37,6 @@ namespace CapaModelo_Navegador
 
             return TablaDatos;
         }
-
-        // Placeholder mientras se define el Modulo real de aplicaciones/modulos/permisos
-        public bool NavegadorFuncExisteAplicacion(int IdAplicacion)
-        {
-            return IdAplicacion > 0;
-        }
-
-        public bool NavegadorFuncExisteModulo(int IdModulo)
-        {
-            return IdModulo > 0;
-        }
-
         public bool NavegadorFuncGuardarUsuarioPermisoBD(int IdUsuario, int IdAplicacion, int IdModulo, int IdPermiso)
         {
             return true;
