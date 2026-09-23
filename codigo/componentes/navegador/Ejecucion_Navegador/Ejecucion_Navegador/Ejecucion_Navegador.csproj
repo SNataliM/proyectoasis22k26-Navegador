@@ -18,7 +18,7 @@
     <!-- Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335 -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>true</Prefer32Bit>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -42,6 +42,21 @@
     <!-- El control de usuario (Navegador) y toda la parametrización de seguridad/bitácora ya viven
          adentro de esta única DLL: la solución "Navegador" (antes repartida entre "Modelo_MVC" y
          "Navegador") es la única que este ejecutor referencia. -->
+    <Reference Include="CapaControlador_Consultas">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaControlador_Consultas.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaModelo_Consultas">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaModelo_Consultas.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Componentes">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaVista_Componentes.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Consultas">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaVista_Consultas.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Mantenimiento">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaVista_Mantenimiento.dll</HintPath>
+    </Reference>
     <Reference Include="CapaVista_Navegador">
       <HintPath>..\..\Navegador\CapaVista_Navegador\bin\Debug\CapaVista_Navegador.dll</HintPath>
     </Reference>

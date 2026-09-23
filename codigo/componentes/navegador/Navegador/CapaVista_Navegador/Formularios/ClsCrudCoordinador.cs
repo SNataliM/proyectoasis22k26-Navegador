@@ -1,5 +1,6 @@
 ﻿using CapaControlador_Navegador;
 using CapaModelo_Navegador;
+using CapaVista_Consultas;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28,10 +29,7 @@ namespace CapaVista_Navegador
         private readonly ClsCrudFormulario _Formulario;
         private readonly ClsCrudAcciones _Acciones;
         private readonly ClsSelectorLlave _SelectorLlave;
-        // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
-        // Se quitó el campo _Seguridad: ya no se valida el acceso aquí en cada acción.
-        // Los botones sin permiso quedan deshabilitados desde FrmCrud (ver ClsCrudSeguridad).
-        // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+
 
         private List<ClsColumnaInfo> _EsquemaActual;
         private Dictionary<string, string> _PkModificar;
@@ -171,11 +169,67 @@ namespace CapaVista_Navegador
         }
 
         // CONSULTAR
+        //Cambios Por Mario Alberto Taracena Pérez 0901-23-9355 y Dylan Rene Hernandez Recinos 0901-23-519
+        // Antes este método solo recargaba la tabla completa. Ahora abre el formulario
+        // de Consultas Simples del componente Consultas, recibe la llave primaria del
+        // registro que el usuario seleccione y filtra el grid del Navegador para mostrar
+        // únicamente ese registro. Desde ahí se puede Modificar o Eliminar.
         public void NavegadorMetConsultar()
         {
             _Formulario.NavegadorMetCerrar();
 
-            NavegadorFuncConsultarTabla();
+            // 1. Cargar la tabla completa primero: necesitamos el esquema para saber cuál
+            //    es el campo PK, y de paso el grid queda con datos si el usuario cancela.
+            if (!NavegadorFuncConsultarTabla())
+                return;
+
+            // 2. Detectar el campo PK del esquema actual
+            ClsColumnaInfo ColumnaPK = null;
+
+            if (_EsquemaActual != null)
+            {
+                ColumnaPK = _EsquemaActual.Find(Columna => Columna.EsPK);
+            }
+
+            if (ColumnaPK == null)
+            {
+                MessageBox.Show(
+                    "La tabla '" + NombreTabla + "' no tiene una llave primaria detectable. " +
+                    "No se puede abrir el selector de Consultas.",
+                    "Consultar",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                return;
+            }
+
+            // 3. Abrir el formulario de Consultas Simples del componente Consultas
+            try
+            {
+                using (FrmConsultasSimples FormularioConsultas =
+                    new FrmConsultasSimples(NombreTabla, ColumnaPK.Nombre))
+                {
+                    // Se pasa el formulario padre como owner para que el diálogo
+                    // aparezca al frente y no detrás de la ventana principal.
+                    Form Padre = _Vista.FindForm();
+
+                    if (FormularioConsultas.ShowDialog(Padre) == DialogResult.OK &&
+                        FormularioConsultas.SeleccionRealizada)
+                    {
+                        _Grid.NavegadorMetFiltrarPorLlave(
+                            ColumnaPK.Nombre,
+                            FormularioConsultas.CampoSeleccionado);
+                    }
+                }
+            }
+            catch (Exception Excepcion)
+            {
+                MessageBox.Show(
+                    "No se pudo abrir el selector de Consultas.\n\n" + Excepcion.Message,
+                    "Consultar",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
         }
 
         // REFRESCAR

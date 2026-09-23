@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -36,6 +36,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CapaControlador_Consultas">
+      <HintPath>..\..\..\consultas\Consultas\CapaControlador_Consultas\bin\Debug\CapaControlador_Consultas.dll</HintPath>
+    </Reference>
     <Reference Include="CapaControlador_Navegador, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CapaControlador_Navegador\bin\Debug\CapaControlador_Navegador.dll</HintPath>
@@ -44,6 +47,15 @@
     <!-- ClsColumnaInfo ahora vive en el modelo (antes estaba en CapaEntidades_Navegador). -->
     <Reference Include="CapaModelo_Navegador">
       <HintPath>..\CapaModelo_Navegador\bin\Debug\CapaModelo_Navegador.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Componentes">
+      <HintPath>..\..\..\consultas\Consultas_Componentes\CapaVista_Componentes\bin\Debug\CapaVista_Componentes.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Consultas">
+      <HintPath>..\..\..\consultas\Consultas\CapaVista_Consultas\bin\Debug\CapaVista_Consultas.dll</HintPath>
+    </Reference>
+    <Reference Include="CapaVista_Mantenimiento">
+      <HintPath>..\..\..\consultas\Consultas_Mantenimiento\CapaVista_Mantenimiento\bin\Debug\CapaVista_Mantenimiento.dll</HintPath>
     </Reference>
     <!-- Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998 -->
     <!-- Componente Seguridad: permisos (ClsSeguridadFormHelper), sesión y bitácora, encapsulados dentro del navegador.
