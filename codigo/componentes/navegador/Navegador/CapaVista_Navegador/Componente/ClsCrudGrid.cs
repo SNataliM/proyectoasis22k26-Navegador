@@ -288,6 +288,63 @@ namespace CapaVista_Navegador
             // Carga de datos inmediata a los controles registrados al moverse por los botones
             NavegadorMetProcesarSeleccionFila(NavegadorDgvDatos.Rows[Indice]);
         }
+
+        //Cambios Por Mario Alberto Taracena Pérez 0901-23-9355 y Dylan Rene Hernandez Recinos 0901-23-519
+        // Filtra el DataGridView para mostrar únicamente la fila cuya llave primaria coincide
+        // con el valor seleccionado en el componente de Consultas. Si ValorPK viene vacío o nulo,
+        // quita el filtro y vuelve a mostrar todos los registros cargados.
+        public void NavegadorMetFiltrarPorLlave(string NombreCampoPK, string ValorPK)
+        {
+            if (NavegadorDgvDatos == null || NavegadorDgvDatos.DataSource == null)
+                return;
+
+            DataTable Tabla = NavegadorDgvDatos.DataSource as DataTable;
+            if (Tabla == null)
+                return;
+
+            if (string.IsNullOrEmpty(ValorPK))
+            {
+                Tabla.DefaultView.RowFilter = "";
+            }
+            else
+            {
+                DataColumn Columna = null;
+
+                foreach (DataColumn C in Tabla.Columns)
+                {
+                    if (string.Equals(C.ColumnName, NombreCampoPK, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Columna = C;
+                        break;
+                    }
+                }
+
+                if (Columna == null)
+                    return;
+
+                Type Tipo = Columna.DataType;
+
+                bool EsNumerico = Tipo == typeof(int) || Tipo == typeof(long) ||
+                                  Tipo == typeof(short) || Tipo == typeof(byte) ||
+                                  Tipo == typeof(decimal) || Tipo == typeof(double) ||
+                                  Tipo == typeof(float);
+
+                if (EsNumerico)
+                {
+                    Tabla.DefaultView.RowFilter = Columna.ColumnName + " = " + ValorPK;
+                }
+                else
+                {
+                    string ValorEscapado = ValorPK.Replace("'", "''");
+                    Tabla.DefaultView.RowFilter = Columna.ColumnName + " = '" + ValorEscapado + "'";
+                }
+            }
+
+            if (NavegadorDgvDatos.Rows.Count > 0)
+            {
+                NavegadorMetSeleccionar(0);
+            }
+        }
     }
 }
 
