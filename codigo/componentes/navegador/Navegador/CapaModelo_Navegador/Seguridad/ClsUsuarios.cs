@@ -7,16 +7,15 @@ using System.Data.Odbc;
 namespace CapaModelo_Navegador
 {
     // Todo lo relacionado a usuarios: login y permisos
-    public class ClsUsuarios
+    public class ClsUsuarios : CapaModelo_Seguridad.ClsConexion
     {
-        private ClsConexionBD _ConexionBD = new ClsConexionBD();
 
         public DataTable NavegadorFuncValidarUsuario(string Usuario, string Clave)
         {
             string ConsultaSQL = "SELECT id_usuario, nombre_usuario, id_rol FROM tbl_usuarios " +
                           "WHERE nombre_usuario = ? AND contrasena = ? AND estado_usuario = 1";
 
-            OdbcConnection Conexion = _ConexionBD.NavegadorFuncConexion();
+            OdbcConnection Conexion = SeguridadMetObtenerConexion();
             DataTable TablaDatos = new DataTable();
 
             try
@@ -32,7 +31,7 @@ namespace CapaModelo_Navegador
             }
             finally
             {
-                _ConexionBD.NavegadorMetDesconexion(Conexion);
+                SeguridadMetDesconexion(Conexion);
             }
 
             return TablaDatos;

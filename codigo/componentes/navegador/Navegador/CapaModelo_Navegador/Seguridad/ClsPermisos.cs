@@ -13,7 +13,6 @@ namespace CapaModelo_Navegador
     public class ClsPermisos
     {
         // Instancia para conectar a la base de datos
-        private ClsConexionBD _ConexionBD = new ClsConexionBD();
 
         public bool NavegadorFuncValidarAcceso(string Usuario, string Modulo)
         {

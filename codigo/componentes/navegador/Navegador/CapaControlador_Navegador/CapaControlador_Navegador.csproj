@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <!-- Componente Seguridad dentro de este mismo repo (codigo/componentes/seguridad). Ajustar solo si se mueve de lugar. -->
+    <SeguridadBin Condition="'$(SeguridadBin)' == ''">..\..\..\seguridad\Seguridad</SeguridadBin>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,6 +37,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <!-- Necesaria porque las clases del Modelo heredan de ClsConexion (Seguridad). -->
+    <Reference Include="CapaModelo_Seguridad">
+      <HintPath>$(SeguridadBin)\CapaModelo_Seguridad\bin\Debug\CapaModelo_Seguridad.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
