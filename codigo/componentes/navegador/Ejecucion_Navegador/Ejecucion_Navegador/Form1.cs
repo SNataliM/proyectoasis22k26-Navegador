@@ -11,7 +11,7 @@ namespace CapaVista_Navegador
         {
             InitializeComponent();
 
-            NavegadorMetConfigurar("tblempleado", 4, @"Ayudas\tblaplicacion.chm");
+            NavegadorMetConfigurar("tblempleado", 4, @"Ayudas\Navegador.chm");
         }
     }
 }

@@ -20,16 +20,16 @@ namespace CapaVista_Navegador
         {
             this.navegador1 = new CapaVista_Navegador.Navegador();
             this.SuspendLayout();
-            //
+            // 
             // navegador1
-            //
+            // 
             this.navegador1.Location = new System.Drawing.Point(0, 0);
             this.navegador1.Name = "navegador1";
             this.navegador1.Size = new System.Drawing.Size(1438, 111);
             this.navegador1.TabIndex = 0;
-            //
+            // 
             // FrmNavegadorCrud
-            //
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(233)))), ((int)(((byte)(217)))));
