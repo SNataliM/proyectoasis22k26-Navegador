@@ -335,7 +335,8 @@ namespace CapaVista_Navegador
                 }
                 else
                 {
-                    Tabla.DefaultView.RowFilter = Columna.ColumnName + " = '" + ValorPK + "'";
+                    string ValorEscapado = ValorPK.Replace("'", "''");
+                    Tabla.DefaultView.RowFilter = Columna.ColumnName + " = '" + ValorEscapado + "'";
                 }
             }
 
