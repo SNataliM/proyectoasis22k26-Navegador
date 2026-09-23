@@ -57,4 +57,11 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Compile Include="Validaciones\ModeloRegistro.cs" />
+    <Compile Include="Validaciones\ValidacionColumnaAttribute.cs" />
+  </ItemGroup>
+  <!-- Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
 </Project>

@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // Desarrollador: Oskar Saul Cermeño Jimenez
 // Carnet:        0901-23-15379
 // Fecha:         16/09/2026
@@ -95,22 +95,24 @@ namespace CapaVista_Navegador
 
                 string Valor = DatosFormulario[Columna.Nombre];
 
-                if (string.IsNullOrWhiteSpace(Valor))
-                {
-                    if (!Columna.Nullable)
-                    {
-                        Mensaje = "El campo '" + Columna.Nombre + "' es obligatorio.";
-                        return false;
-                    }
-
-                    continue;
-                }
-
+                // Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
                 Datos[Columna.Nombre] = Valor;
+                // Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
             }
 
-            List<string> Errores = _CtrlRegistro.NavegadorFuncValidarRegistro(Datos, Tabla);
+            // Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
+            var Modelo = new ModeloRegistro(Datos, Esquema);
+            if (!new Ayudas.ValidacionDatos(Modelo).Validar())
+                return false;
 
+            // Recupera el comportamiento previo: omitir opcionales vacíos al persistir.
+            foreach (var Columna in Esquema)
+                if (Columna.Nullable && Datos.ContainsKey(Columna.Nombre) &&
+                    string.IsNullOrWhiteSpace(Datos[Columna.Nombre]))
+                    Datos.Remove(Columna.Nombre);
+
+            List<string> Errores = new List<string>();
+            // Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
             Errores.AddRange(NavegadorFuncValidarLlavesForaneas(Tabla, Esquema, Datos));
 
             if (Errores.Count > 0)
