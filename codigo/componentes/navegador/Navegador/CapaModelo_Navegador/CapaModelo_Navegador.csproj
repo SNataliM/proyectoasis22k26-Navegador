@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <!-- Componente Seguridad dentro de este mismo repo (codigo/componentes/seguridad). Ajustar solo si se mueve de lugar. -->
+    <SeguridadBin Condition="'$(SeguridadBin)' == ''">..\..\..\seguridad\Seguridad</SeguridadBin>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,8 +37,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.Odbc, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Data.Odbc.8.0.0\lib\net462\System.Data.Odbc.dll</HintPath>
+    <!-- Conexión a la base de datos: se reutiliza ClsConexion del componente Seguridad (mismo DSN). -->
+    <Reference Include="CapaModelo_Seguridad">
+      <HintPath>$(SeguridadBin)\CapaModelo_Seguridad\bin\Debug\CapaModelo_Seguridad.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="entidades\ClsColumnaInfo.cs" />
-    <Compile Include="conexion\ClsConexionBD.cs" />
     <Compile Include="esquema\ClsEsquema.cs" />
     <Compile Include="seguridad\ClsPermisos.cs" />
     <Compile Include="datos\ClsRegistros.cs" />
