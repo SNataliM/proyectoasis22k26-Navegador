@@ -52,14 +52,11 @@
   <ItemGroup>
     <Compile Include="entidades\ClsColumnaInfo.cs" />
     <Compile Include="esquema\ClsEsquema.cs" />
-    <Compile Include="seguridad\ClsPermisos.cs" />
     <Compile Include="datos\ClsRegistros.cs" />
-    <Compile Include="seguridad\ClsUsuarios.cs" />
     <Compile Include="validaciones\ClsValidaciones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

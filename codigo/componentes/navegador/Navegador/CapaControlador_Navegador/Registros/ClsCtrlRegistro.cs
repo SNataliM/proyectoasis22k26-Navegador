@@ -1,19 +1,17 @@
 ﻿﻿// Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
 // Controlador original de registros. Coordina operaciones CRUD con el modelo.
-// Sus comprobaciones previas se conservan para compatibilidad.
 // Dylan Rene Hernandez Recinos 16/09/2026
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using CapaModelo_Navegador;
 
 namespace CapaControlador_Navegador
 {
-    // Controlador para las operaciones que modifican registros: Insertar, Actualizar, Eliminar y validar.
+    // Controlador para las operaciones que modifican registros: Insertar, Actualizar y Eliminar.
+    // La validación de datos se hace en ModeloRegistro (CapaControlador_Navegador.Validaciones).
     public class ClsCtrlRegistro
     {
         private ClsRegistros _Registros = new ClsRegistros();
-        private ClsEsquema _Esquema = new ClsEsquema();
 
         // Verifica si ya existe un registro con esa llave primaria (evita duplicados).
         public bool NavegadorFuncExisteLlavePrimaria(string NombreTabla, string[] CamposPK, string[] ValoresPK)
@@ -58,102 +56,6 @@ namespace CapaControlador_Navegador
                 throw new ArgumentException("No se encontró la llave primaria del registro.");
 
             return _Registros.NavegadorFuncEliminarRegistro(NombreTabla, ClavesPrimarias);
-        }
-
-        // La validación original consulta el esquema y revisa los campos recibidos.
-        // Devuelve mensajes para que la vista decida cómo presentarlos.
-        public List<string> NavegadorFuncValidarRegistro(Dictionary<string, string> Datos, string NombreTabla)
-        {
-            List<string> Errores = new List<string>();
-
-            try
-            {
-                List<ClsColumnaInfo> Columnas = _Esquema.NavegadorFuncObtenerEsquemaTabla(NombreTabla);
-
-                foreach (ClsColumnaInfo Columna in Columnas)
-                {
-                    if (!Datos.ContainsKey(Columna.Nombre))
-                        continue;
-
-                    string Valor = Datos[Columna.Nombre];
-
-                    // Verifica que los campos obligatorios no estén vacíos
-                    if (Columna.Nullable == false && string.IsNullOrWhiteSpace(Valor))
-                    {
-                        Errores.Add("El campo '" + Columna.Nombre + "' es obligatorio.");
-                        continue;
-                    }
-
-                    string ErrorValidacion = NavegadorFuncValidarCampo(Valor, Columna);
-
-                    if (!string.IsNullOrEmpty(ErrorValidacion))
-                        Errores.Add(ErrorValidacion);
-                }
-            }
-            catch (Exception Excepcion)
-            {
-                throw new Exception("Error al validar los datos: " + Excepcion.Message, Excepcion);
-            }
-
-            return Errores;
-        }
-
-        // Reconoce texto, números y fechas; devuelve el primer error del campo
-        // o una cadena vacía cuando el valor cumple la regla.
-        private string NavegadorFuncValidarCampo(string Valor, ClsColumnaInfo Columna)
-        {
-            if (string.IsNullOrEmpty(Valor))
-                return "";
-
-            string Tipo = Columna.TipoDato.ToLower();
-
-            switch (Tipo)
-            {
-                // Texto: solo caracteres permitidos y longitud máxima
-                case "varchar":
-                case "char":
-                case "text":
-                case "longtext":
-                case "tinytext":
-                case "mediumtext":
-
-                    if (!Regex.IsMatch(Valor, @"^[\p{L}\p{N}\s\-_\.]+$"))
-                        return "El campo '" + Columna.Nombre + "' contiene caracteres no permitidos.";
-
-                    if (Columna.Longitud > 0 && Valor.Length > Columna.Longitud)
-                        return "El campo '" + Columna.Nombre + "' excede la longitud máxima permitida (" + Columna.Longitud + " caracteres).";
-
-                    return "";
-
-                // Numérico: solo dígitos y punto decimal opcional
-                case "int":
-                case "integer":
-                case "decimal":
-                case "numeric":
-                case "float":
-                case "double":
-                case "real":
-
-                    if (!Regex.IsMatch(Valor, @"^[0-9]+(\.[0-9]+)?$"))
-                        return "El campo '" + Columna.Nombre + "' debe ser un valor numérico.";
-
-                    return "";
-
-                // Fecha: debe ser una fecha válida
-                case "datetime":
-                case "date":
-                case "timestamp":
-
-                    DateTime Fecha;
-
-                    if (!DateTime.TryParse(Valor, out Fecha))
-                        return "El campo '" + Columna.Nombre + "' debe ser una fecha válida.";
-
-                    return "";
-
-                default:
-                    return "";
-            }
         }
     }
 }

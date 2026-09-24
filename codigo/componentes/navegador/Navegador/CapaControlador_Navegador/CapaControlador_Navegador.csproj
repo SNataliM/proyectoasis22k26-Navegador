@@ -51,10 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="esquema\ClsCtrlEsquema.cs" />
-    <Compile Include="seguridad\ClsCtrlPermiso.cs" />
     <Compile Include="registros\ClsCtrlRegistro.cs" />
     <Compile Include="registros\ClsCtrlTabla.cs" />
-    <Compile Include="seguridad\ClsCtrlUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
