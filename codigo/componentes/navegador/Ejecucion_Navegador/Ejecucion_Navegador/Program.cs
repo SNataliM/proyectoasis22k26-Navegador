@@ -24,7 +24,7 @@ namespace Ejecucion_Navegador
             ClsSesionPrueba.NavegadorMetIniciarSesionPrueba();
             // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 
-            Application.Run(new Form1());
+            Application.Run(new FrmPrincipal());
         }
     }
 }
