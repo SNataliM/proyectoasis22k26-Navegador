@@ -245,6 +245,10 @@ namespace CapaVista_Navegador
                 NavegadorFuncResumenDatos(Datos)))
                 return false;
 
+            // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
+            // Primero se inserta el registro tal como ya funcionaba. Si se insertó bien, se calcula
+            // qué id usar para la bitácora (el de la llave primaria si ya se conoce, si no 0 porque
+            // es autoincremento) y se registra la acción "INSERT" con los datos que se guardaron.
             // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
             // Transacción: el INSERT y su bitácora (por Seguridad) van en la misma transacción de base
             // de datos. Si el INSERT no afecta filas o algo lanza una excepción (incluida la bitácora),
@@ -269,6 +273,7 @@ namespace CapaVista_Navegador
                 return true;
             }
             // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+            // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
         // ====================================================================
@@ -305,6 +310,9 @@ namespace CapaVista_Navegador
                 NavegadorFuncResumenDatos(Datos)))
                 return false;
 
+            // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
+            // Igual que en Insertar: primero se actualiza el registro, y si salió bien, se registra
+            // la acción "UPDATE" en la bitácora. Aquí sí se conoce el id real porque ya existía.
             // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
             // Transacción: UPDATE + bitácora "UPDATE" (por Seguridad) en una sola unidad; ver NavegadorFuncInsertar.
             using (ClsTransaccion TransaccionBD = new ClsTransaccion())
@@ -325,6 +333,7 @@ namespace CapaVista_Navegador
                 return true;
             }
             // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+            // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
         // ====================================================================
@@ -361,6 +370,9 @@ namespace CapaVista_Navegador
                 "¿Desea eliminar el registro seleccionado de la tabla '" + Tabla + "'?"))
                 return false;
 
+            // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
+            // Igual que arriba: se elimina el registro y, si se pudo eliminar, se registra la
+            // acción "DELETE" en la bitácora con el id del registro que se borró.
             // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
             // Transacción: DELETE + bitácora "DELETE" (por Seguridad) en una sola unidad; ver NavegadorFuncInsertar.
             using (ClsTransaccion TransaccionBD = new ClsTransaccion())
@@ -380,6 +392,7 @@ namespace CapaVista_Navegador
                 return true;
             }
             // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+            // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
         }
 
         // ====================================================================

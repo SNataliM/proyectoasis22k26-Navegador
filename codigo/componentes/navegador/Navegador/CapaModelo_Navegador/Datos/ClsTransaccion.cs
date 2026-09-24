@@ -1,4 +1,4 @@
-// Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
+// Inicio - Gabriel André Guillén Pocón 0901-23-1998.
 // Transacción de base de datos del Navegador.
 using System;
 using System.Data.Odbc;
@@ -72,4 +72,4 @@ namespace CapaModelo_Navegador
         }
     }
 }
-// Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+// Fin - Gabriel André Guillén Pocón 0901-23-1998.

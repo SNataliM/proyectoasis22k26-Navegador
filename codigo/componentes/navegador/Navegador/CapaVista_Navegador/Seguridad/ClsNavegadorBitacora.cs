@@ -11,6 +11,10 @@ namespace CapaVista_Navegador
     {
         private readonly ClsModeloBitacora _Bitacora = new ClsModeloBitacora();
 
+        // Se usa el método de instancia con IdUsuario explícito porque el método estático
+        // SeguridadMetRegistrarAccion usa otra clase de sesión (ClsSesion) fija en el usuario 1.
+        // La IP se pasa en null y Seguridad la calcula sola.
+        //
         // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
         // La bitácora se registra SIEMPRE por Seguridad, pero dentro de la transacción del CRUD:
         // se usa la sobrecarga transaccional de ClsModeloBitacora (recibe la conexión y la transacción).
@@ -20,7 +24,7 @@ namespace CapaVista_Navegador
         public void NavegadorMetRegistrarBitacora(string Accion, string Tabla, int IdRegistro, string Detalles, OdbcConnection Conexion, OdbcTransaction Transaccion)
         {
             _Bitacora.SeguridadMetRegistrarBitacora(
-                ClsSesionSeguridad.IdUsuario, Accion, Tabla, IdRegistro, Detalles, null, Conexion, Transaccion);
+                ClsNavegadorSesion.NavegadorFuncIdUsuario(), Accion, Tabla, IdRegistro, Detalles, null, Conexion, Transaccion);
         }
         // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
     }
