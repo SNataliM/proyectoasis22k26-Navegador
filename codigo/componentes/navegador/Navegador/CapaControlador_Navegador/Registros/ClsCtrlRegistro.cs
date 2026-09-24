@@ -8,7 +8,7 @@ using CapaModelo_Navegador;
 namespace CapaControlador_Navegador
 {
     // Controlador para las operaciones que modifican registros: Insertar, Actualizar y Eliminar.
-    // La validación de datos se hace en ModeloRegistro (CapaControlador_Navegador.Validaciones).
+    // La validación de datos se hace en ClsModeloRegistro (CapaControlador_Navegador.Validaciones).
     public class ClsCtrlRegistro
     {
         private ClsRegistros _Registros = new ClsRegistros();
