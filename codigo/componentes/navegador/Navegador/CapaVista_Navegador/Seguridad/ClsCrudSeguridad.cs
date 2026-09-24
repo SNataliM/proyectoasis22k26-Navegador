@@ -38,6 +38,16 @@ namespace CapaVista_Navegador
         // en vez de dejar que la excepción se propague y la aplicación reviente.
         public void NavegadorMetAplicarPermisos(Form Formulario, Dictionary<Control, TipoPermiso> MapaBotones)
         {
+            // Sin sesión de Seguridad no hay usuario ni roles: los botones quedan deshabilitados.
+            if (!ClsNavegadorSesion.NavegadorFuncHaySesion())
+            {
+                MessageBox.Show(
+                    "No hay una sesión activa. Inicie sesión desde el Login de Seguridad para habilitar el Navegador.",
+                    "Sesión requerida",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+
             try
             {
                 ClsSeguridadFormHelper.SeguridadMetInicializarSeguridad(Formulario, _IdModulo, _IdAplicacion, MapaBotones);

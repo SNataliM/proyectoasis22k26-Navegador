@@ -39,6 +39,7 @@
             this.SeguridadPnlAcentoTitulo = new System.Windows.Forms.Panel();
             this.SeguridadLblTituloFormulario = new System.Windows.Forms.Label();
             this.SeguridadPnlVerificarCambiar = new System.Windows.Forms.Panel();
+            this.SeguridadChkVerContrasena = new System.Windows.Forms.CheckBox();
             this.SeguridadLblConfirmarContrasena = new System.Windows.Forms.Label();
             this.SeguridadTxtConfirmarContrasena = new System.Windows.Forms.TextBox();
             this.SeguridadBtnCambiarContrasena = new System.Windows.Forms.Button();
@@ -51,6 +52,7 @@
             this.SeguridadPbIconoVerificar = new System.Windows.Forms.PictureBox();
             this.SeguridadLblSeparadorPasos = new System.Windows.Forms.Label();
             this.SeguridadPnlEnviarCodigo = new System.Windows.Forms.Panel();
+            this.SeguridadTxtUsuario = new System.Windows.Forms.TextBox();
             this.SeguridadBtnEnviarCodigo = new System.Windows.Forms.Button();
             this.SeguridadLblCorreoElectronico = new System.Windows.Forms.Label();
             this.SeguridadTxtCorreo = new System.Windows.Forms.TextBox();
@@ -76,7 +78,6 @@
             this.SeguridadPbLogoEmpresa = new System.Windows.Forms.PictureBox();
             this.SeguridadPnlContenedorPrincipal = new System.Windows.Forms.Panel();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.SeguridadTxtUsuario = new System.Windows.Forms.TextBox();
             this.SeguridadPnlContenidoFormulario.SuspendLayout();
             this.SeguridadPnlAvisoImportante.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SeguridadPbIconoVigenciaCodigo)).BeginInit();
@@ -211,6 +212,7 @@
             // SeguridadPnlVerificarCambiar
             // 
             this.SeguridadPnlVerificarCambiar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadChkVerContrasena);
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadLblConfirmarContrasena);
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadTxtConfirmarContrasena);
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadBtnCambiarContrasena);
@@ -221,11 +223,24 @@
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadLblDescripcionVerificarCambiar);
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadLblTituloVerificarCambiar);
             this.SeguridadPnlVerificarCambiar.Controls.Add(this.SeguridadPbIconoVerificar);
-            this.SeguridadPnlVerificarCambiar.Location = new System.Drawing.Point(358, 168);
+            this.SeguridadPnlVerificarCambiar.Location = new System.Drawing.Point(331, 168);
             this.SeguridadPnlVerificarCambiar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.SeguridadPnlVerificarCambiar.Name = "SeguridadPnlVerificarCambiar";
-            this.SeguridadPnlVerificarCambiar.Size = new System.Drawing.Size(284, 373);
+            this.SeguridadPnlVerificarCambiar.Size = new System.Drawing.Size(308, 373);
             this.SeguridadPnlVerificarCambiar.TabIndex = 8;
+            // 
+            // SeguridadChkVerContrasena
+            // 
+            this.SeguridadChkVerContrasena.AutoSize = true;
+            this.SeguridadChkVerContrasena.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SeguridadChkVerContrasena.ForeColor = System.Drawing.Color.DarkCyan;
+            this.SeguridadChkVerContrasena.Location = new System.Drawing.Point(249, 267);
+            this.SeguridadChkVerContrasena.Name = "SeguridadChkVerContrasena";
+            this.SeguridadChkVerContrasena.Size = new System.Drawing.Size(59, 29);
+            this.SeguridadChkVerContrasena.TabIndex = 10;
+            this.SeguridadChkVerContrasena.Text = "👁";
+            this.SeguridadChkVerContrasena.UseVisualStyleBackColor = true;
+            this.SeguridadChkVerContrasena.CheckedChanged += new System.EventHandler(this.SeguridadChkVerContrasena_CheckedChanged);
             // 
             // SeguridadLblConfirmarContrasena
             // 
@@ -252,7 +267,6 @@
             // SeguridadBtnCambiarContrasena
             // 
             this.SeguridadBtnCambiarContrasena.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(95)))), ((int)(((byte)(102)))));
-            this.SeguridadBtnCambiarContrasena.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SeguridadBtnCambiarContrasena.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SeguridadBtnCambiarContrasena.ForeColor = System.Drawing.Color.White;
             this.SeguridadBtnCambiarContrasena.Location = new System.Drawing.Point(12, 333);
@@ -346,9 +360,9 @@
             // 
             this.SeguridadLblSeparadorPasos.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
             this.SeguridadLblSeparadorPasos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(95)))), ((int)(((byte)(102)))));
-            this.SeguridadLblSeparadorPasos.Location = new System.Drawing.Point(297, 312);
+            this.SeguridadLblSeparadorPasos.Location = new System.Drawing.Point(310, 322);
             this.SeguridadLblSeparadorPasos.Name = "SeguridadLblSeparadorPasos";
-            this.SeguridadLblSeparadorPasos.Size = new System.Drawing.Size(63, 37);
+            this.SeguridadLblSeparadorPasos.Size = new System.Drawing.Size(26, 51);
             this.SeguridadLblSeparadorPasos.TabIndex = 7;
             this.SeguridadLblSeparadorPasos.Text = "›";
             this.SeguridadLblSeparadorPasos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -367,13 +381,23 @@
             this.SeguridadPnlEnviarCodigo.Location = new System.Drawing.Point(15, 164);
             this.SeguridadPnlEnviarCodigo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.SeguridadPnlEnviarCodigo.Name = "SeguridadPnlEnviarCodigo";
-            this.SeguridadPnlEnviarCodigo.Size = new System.Drawing.Size(284, 377);
+            this.SeguridadPnlEnviarCodigo.Size = new System.Drawing.Size(289, 377);
             this.SeguridadPnlEnviarCodigo.TabIndex = 0;
+            // 
+            // SeguridadTxtUsuario
+            // 
+            this.SeguridadTxtUsuario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.SeguridadTxtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SeguridadTxtUsuario.ForeColor = System.Drawing.Color.Black;
+            this.SeguridadTxtUsuario.Location = new System.Drawing.Point(12, 217);
+            this.SeguridadTxtUsuario.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.SeguridadTxtUsuario.Name = "SeguridadTxtUsuario";
+            this.SeguridadTxtUsuario.Size = new System.Drawing.Size(240, 31);
+            this.SeguridadTxtUsuario.TabIndex = 8;
             // 
             // SeguridadBtnEnviarCodigo
             // 
             this.SeguridadBtnEnviarCodigo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(95)))), ((int)(((byte)(102)))));
-            this.SeguridadBtnEnviarCodigo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SeguridadBtnEnviarCodigo.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SeguridadBtnEnviarCodigo.ForeColor = System.Drawing.Color.White;
             this.SeguridadBtnEnviarCodigo.Location = new System.Drawing.Point(12, 337);
@@ -659,17 +683,6 @@
             this.pictureBox5.TabIndex = 0;
             this.pictureBox5.TabStop = false;
             // 
-            // SeguridadTxtUsuario
-            // 
-            this.SeguridadTxtUsuario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
-            this.SeguridadTxtUsuario.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.SeguridadTxtUsuario.ForeColor = System.Drawing.Color.Black;
-            this.SeguridadTxtUsuario.Location = new System.Drawing.Point(12, 217);
-            this.SeguridadTxtUsuario.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.SeguridadTxtUsuario.Name = "SeguridadTxtUsuario";
-            this.SeguridadTxtUsuario.Size = new System.Drawing.Size(240, 31);
-            this.SeguridadTxtUsuario.TabIndex = 8;
-            // 
             // FrmRecuperacion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
@@ -761,6 +774,7 @@
         private System.Windows.Forms.PictureBox SeguridadPbIconoVigenciaCodigo;
         private System.Windows.Forms.Label SeguridadLblAvisoCodigo;
         private System.Windows.Forms.TextBox SeguridadTxtUsuario;
+        private System.Windows.Forms.CheckBox SeguridadChkVerContrasena;
     }
 }
 

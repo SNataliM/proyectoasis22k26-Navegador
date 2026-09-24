@@ -56,7 +56,7 @@ namespace CapaVista_Seguridad
                     this.Hide();
                     var frmPrincipal = new FrmSplash();
                     frmPrincipal.ShowDialog();
-                    this.Close();
+                    this.Show();
                 }
                 else
                 {
@@ -80,6 +80,11 @@ namespace CapaVista_Seguridad
             Recuperacion.ShowDialog();
 
             this.Show();
+        }
+
+        private void SeguridadChkMostrarContra_CheckedChanged(object sender, EventArgs e)
+        {
+            SeguridadTxtContraseña.PasswordChar = SeguridadChkMostrarContra.Checked ? '\0' : '*';
         }
     }
 }

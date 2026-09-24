@@ -1,10 +1,12 @@
 using CapaModelo_Seguridad.Contratos;
 using CapaModelo_Seguridad.Entidades;
 using CapaModelo_Seguridad.Repositorios;
+using CapaControlador_Seguridad.Objetos_de_valor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Odbc;
 using System.Linq;
 
 namespace CapaControlador_Seguridad
@@ -13,6 +15,7 @@ namespace CapaControlador_Seguridad
     {
         private int _IdBitacora;
         private int? _IdUsuario;
+        private string _NombreUsuario;
         private string _AccionBitacora;
         private string _TablaBitacora;
         private int _IdRegistroBitacora;
@@ -25,6 +28,7 @@ namespace CapaControlador_Seguridad
 
         public int IdBitacora { get => _IdBitacora; set => _IdBitacora = value; }
         public int? IdUsuario { get => _IdUsuario; set => _IdUsuario = value; }
+        public string NombreUsuario { get => _NombreUsuario; set => _NombreUsuario = value; }
         public string AccionBitacora { get => _AccionBitacora; set => _AccionBitacora = value; }
         public string TablaBitacora { get => _TablaBitacora; set => _TablaBitacora = value; }
         public int IdRegistroBitacora { get => _IdRegistroBitacora; set => _IdRegistroBitacora = value; }
@@ -43,12 +47,12 @@ namespace CapaControlador_Seguridad
             try
             {
                 var ModeloDatos = new ClsBitacora();
-                ModeloDatos.IdUsuario = idUsuario ?? ClsSesion.IdUsuario;
+                ModeloDatos.IdUsuario = idUsuario ?? ClsSesionSeguridad.IdUsuario;
                 ModeloDatos.AccionBitacora = accion;
                 ModeloDatos.TablaBitacora = tabla;
                 ModeloDatos.IdRegistroBitacora = idRegistro;
                 ModeloDatos.DetallesBitacora = detalles;
-                ModeloDatos.IpBitacora = string.IsNullOrEmpty(ip) ? ClsSesion.ObtenerIPLocal() : ip;
+                ModeloDatos.IpBitacora = string.IsNullOrEmpty(ip) ? ClsSesionSeguridad.SeguridadMetObtenerIPLocal() : ip;
                 ModeloDatos.FechaHoraBitacora = DateTime.Now;
 
                 _RepositorioBitacora.SeguridadMetAgregar(ModeloDatos);
@@ -61,6 +65,33 @@ namespace CapaControlador_Seguridad
             return Mensaje;
         }
 
+        // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        // SOBRECARGA TRANSACCIONAL (solicitada por el componente Navegador).
+        // ¿Qué es? El mismo SeguridadMetRegistrarBitacora de arriba, con dos parámetros más:
+        // la conexión y la transacción abiertas por quien la llama (por ejemplo el Navegador).
+        // ¿Para qué? Para registrar la bitácora dentro de la misma transacción de base de datos
+        // que la operación principal (todo o nada).
+        // Diferencia clave: esta versión NO atrapa las excepciones. Si el INSERT de la bitácora
+        // falla, el error sube a quien la llamó para que haga Rollback de toda la operación;
+        // si aquí se "tragara" el error, la operación se confirmaría sin su bitácora.
+        // La bitácora sigue pasando por Seguridad (mismo usuario de sesión, misma IP, misma
+        // tabla tblBitacora). El método original queda intacto.
+        public string SeguridadMetRegistrarBitacora(int? idUsuario, string accion, string tabla, int idRegistro, string detalles, string ip, OdbcConnection Conexion, OdbcTransaction Transaccion)
+        {
+            var ModeloDatos = new ClsBitacora();
+            ModeloDatos.IdUsuario = idUsuario ?? ClsSesionSeguridad.IdUsuario;
+            ModeloDatos.AccionBitacora = accion;
+            ModeloDatos.TablaBitacora = tabla;
+            ModeloDatos.IdRegistroBitacora = idRegistro;
+            ModeloDatos.DetallesBitacora = detalles;
+            ModeloDatos.IpBitacora = string.IsNullOrEmpty(ip) ? ClsSesionSeguridad.SeguridadMetObtenerIPLocal() : ip;
+            ModeloDatos.FechaHoraBitacora = DateTime.Now;
+
+            _RepositorioBitacora.SeguridadMetAgregar(ModeloDatos, Conexion, Transaccion);
+            return "Bitácora registrada con éxito";
+        }
+        // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+
         public static string SeguridadMetRegistrarAccion(string accion, string tabla, int idRegistro, string detalles)
         {
             try
@@ -68,12 +99,12 @@ namespace CapaControlador_Seguridad
                 var repo = new ClsRepositorioBitacora();
                 var bitacora = new ClsBitacora
                 {
-                    IdUsuario = ClsSesion.IdUsuario,
+                    IdUsuario = ClsSesionSeguridad.IdUsuario,
                     AccionBitacora = accion,
                     TablaBitacora = tabla,
                     IdRegistroBitacora = idRegistro,
                     DetallesBitacora = detalles,
-                    IpBitacora = ClsSesion.ObtenerIPLocal(),
+                    IpBitacora = ClsSesionSeguridad.SeguridadMetObtenerIPLocal(),
                     FechaHoraBitacora = DateTime.Now
                 };
                 repo.SeguridadMetAgregar(bitacora);
@@ -95,6 +126,7 @@ namespace CapaControlador_Seguridad
                 {
                     _IdBitacora = Item.IdBitacora,
                     _IdUsuario = Item.IdUsuario,
+                    _NombreUsuario = Item.NombreUsuario,
                     _AccionBitacora = Item.AccionBitacora,
                     _TablaBitacora = Item.TablaBitacora,
                     _IdRegistroBitacora = Item.IdRegistroBitacora,
@@ -104,29 +136,6 @@ namespace CapaControlador_Seguridad
                 });
             }
             return _ListaBitacora;
-        }
-    }
-
-    public static class ClsSesion
-    {
-        public static int? IdUsuario { get; set; } = 1;
-        public static string NombreUsuario { get; set; } = "Administrador";
-
-        public static string ObtenerIPLocal()
-        {
-            try
-            {
-                var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
-                foreach (var ip in host.AddressList)
-                {
-                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                    {
-                        return ip.ToString();
-                    }
-                }
-            }
-            catch { }
-            return "127.0.0.1";
         }
     }
 }

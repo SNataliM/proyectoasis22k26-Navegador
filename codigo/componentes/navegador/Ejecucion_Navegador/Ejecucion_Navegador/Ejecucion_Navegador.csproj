@@ -61,11 +61,7 @@
       <HintPath>..\..\Navegador\CapaVista_Navegador\bin\Debug\CapaVista_Navegador.dll</HintPath>
     </Reference>
     <!-- Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335 -->
-    <!-- Se agrega esta referencia porque Program.cs ahora llama a ClsSesionPrueba, que vive aquí. -->
-    <Reference Include="CapaControlador_Navegador">
-      <HintPath>..\..\Navegador\CapaControlador_Navegador\bin\Debug\CapaControlador_Navegador.dll</HintPath>
-    </Reference>
-    <!-- Componente Seguridad: necesario para inicializar la sesión de prueba (ver ClsSesionPrueba) y para
+    <!-- Componente Seguridad: necesario para la sesión de Seguridad y para
          que sus dependencias (BCrypt.Net-Next, MailKit, etc.) terminen en la carpeta de salida. -->
     <Reference Include="CapaControlador_Seguridad">
       <HintPath>$(SeguridadBin)\CapaControlador_Seguridad\bin\Debug\CapaControlador_Seguridad.dll</HintPath>
@@ -96,7 +92,6 @@
       <DependentUpon>FrmPrincipal.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
-    <Compile Include="ClsSesionPrueba.cs" />
     <EmbeddedResource Include="FrmPrincipal.resx">
       <DependentUpon>FrmPrincipal.cs</DependentUpon>
     </EmbeddedResource>
@@ -122,10 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Content Include="..\..\..\..\..\ayuda\componentes\navegador\Navegador.chm">
-      <Link>Ayudas\Navegador.chm</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

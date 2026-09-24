@@ -1,3 +1,4 @@
+// Inicio - Gabriel André Guillén Pocón 0901-23-1998.
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -318,3 +319,4 @@ namespace CapaModelo_Navegador
         }
     }
 }
+// Fin - Gabriel André Guillén Pocón 0901-23-1998.

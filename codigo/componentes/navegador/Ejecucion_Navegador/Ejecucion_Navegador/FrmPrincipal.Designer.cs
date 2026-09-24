@@ -1,4 +1,4 @@
-﻿namespace CapaVista_Navegador
+namespace CapaVista_Navegador
 {
     partial class FrmPrincipal
     {
@@ -28,18 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.navegador1 = new CapaVista_Navegador.Navegador();
             this.SuspendLayout();
+            //
+            // navegador1
+            //
+            this.navegador1.Location = new System.Drawing.Point(0, 0);
+            this.navegador1.Name = "navegador1";
+            this.navegador1.Size = new System.Drawing.Size(1438, 111);
+            this.navegador1.TabIndex = 0;
             //
             // FrmPrincipal
             //
-            // No agrega controles propios: el control Navegador (la cinta de botones) ya viene insertado
-            // una sola vez desde el formulario base FrmNavegadorCrud. Agregar aquí un "navegador1"/
-            // "navegador2" propios duplicaría la cinta de botones en pantalla.
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(233)))), ((int)(((byte)(217)))));
+            this.ClientSize = new System.Drawing.Size(1480, 653);
+            this.Controls.Add(this.navegador1);
             this.Name = "FrmPrincipal";
+            this.Text = "1001 – Crud";
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private Navegador navegador1;
     }
 }

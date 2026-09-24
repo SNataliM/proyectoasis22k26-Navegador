@@ -101,6 +101,27 @@ namespace CapaModelo_Navegador
 
         public bool NavegadorFuncInsertarRegistro(string NombreTabla, Dictionary<string, string> Datos)
         {
+            OdbcConnection Conexion = SeguridadMetObtenerConexion();
+            Conexion.Open();
+
+            try
+            {
+                return NavegadorFuncInsertarRegistro(NombreTabla, Datos, Conexion, null);
+            }
+            finally
+            {
+                SeguridadMetDesconexion(Conexion);
+            }
+        }
+
+        // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        // SOBRECARGA TRANSACCIONAL: insertar
+        // Ejecuta la sentencia sobre la conexión y la transacción recibidas (no abre ni cierra
+        // la conexión, no confirma nada). La versión de arriba solo abre una conexión propia y
+        // llama a esta con Transaccion = null, así el SQL vive en un solo lugar.
+        // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        public bool NavegadorFuncInsertarRegistro(string NombreTabla, Dictionary<string, string> Datos, OdbcConnection Conexion, OdbcTransaction Transaccion)
+        {
             if (Datos == null || Datos.Count == 0) return false;
 
             ClsValidaciones.NavegadorMetValidarIdentificador(NombreTabla);
@@ -121,23 +142,28 @@ namespace CapaModelo_Navegador
             }
 
             string ConsultaSQL = "INSERT INTO " + NombreTabla + " (" + Columnas + ") VALUES (" + Valores + ")";
+            using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL, Conexion, Transaccion))
+            {
+                int Posicion = 0;
+
+                foreach (KeyValuePair<string, string> Dato in Datos)
+                {
+                    Comando.Parameters.AddWithValue("@p" + Posicion, Dato.Value);
+                    Posicion++;
+                }
+
+                return Comando.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool NavegadorFuncActualizarRegistro(string NombreTabla, Dictionary<string, string> Valores, Dictionary<string, string> ClavesPrimarias)
+        {
             OdbcConnection Conexion = SeguridadMetObtenerConexion();
             Conexion.Open();
 
             try
             {
-                using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL, Conexion))
-                {
-                    int Posicion = 0;
-
-                    foreach (KeyValuePair<string, string> Dato in Datos)
-                    {
-                        Comando.Parameters.AddWithValue("@p" + Posicion, Dato.Value);
-                        Posicion++;
-                    }
-
-                    return Comando.ExecuteNonQuery() > 0;
-                }
+                return NavegadorFuncActualizarRegistro(NombreTabla, Valores, ClavesPrimarias, Conexion, null);
             }
             finally
             {
@@ -145,7 +171,13 @@ namespace CapaModelo_Navegador
             }
         }
 
-        public bool NavegadorFuncActualizarRegistro(string NombreTabla, Dictionary<string, string> Valores, Dictionary<string, string> ClavesPrimarias)
+        // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        // SOBRECARGA TRANSACCIONAL: actualizar
+        // Ejecuta la sentencia sobre la conexión y la transacción recibidas (no abre ni cierra
+        // la conexión, no confirma nada). La versión de arriba solo abre una conexión propia y
+        // llama a esta con Transaccion = null, así el SQL vive en un solo lugar.
+        // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        public bool NavegadorFuncActualizarRegistro(string NombreTabla, Dictionary<string, string> Valores, Dictionary<string, string> ClavesPrimarias, OdbcConnection Conexion, OdbcTransaction Transaccion)
         {
             if (Valores == null || Valores.Count == 0 || ClavesPrimarias == null || ClavesPrimarias.Count == 0)
                 return false;
@@ -186,25 +218,15 @@ namespace CapaModelo_Navegador
                 Indice++;
             }
 
-            OdbcConnection Conexion = SeguridadMetObtenerConexion();
-            Conexion.Open();
-
-            try
+            using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL.ToString(), Conexion, Transaccion))
             {
-                using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL.ToString(), Conexion))
-                {
-                    foreach (KeyValuePair<string, string> Dato in ValoresActualizar)
-                        Comando.Parameters.AddWithValue("@valor_" + Dato.Key, Dato.Value);
+                foreach (KeyValuePair<string, string> Dato in ValoresActualizar)
+                    Comando.Parameters.AddWithValue("@valor_" + Dato.Key, Dato.Value);
 
-                    foreach (KeyValuePair<string, string> Clave in ClavesPrimarias)
-                        Comando.Parameters.AddWithValue("@pk_" + Clave.Key, Clave.Value);
+                foreach (KeyValuePair<string, string> Clave in ClavesPrimarias)
+                    Comando.Parameters.AddWithValue("@pk_" + Clave.Key, Clave.Value);
 
-                    return Comando.ExecuteNonQuery() > 0;
-                }
-            }
-            finally
-            {
-                SeguridadMetDesconexion(Conexion);
+                return Comando.ExecuteNonQuery() > 0;
             }
         }
 
@@ -222,6 +244,27 @@ namespace CapaModelo_Navegador
         // ====================================================================
         public bool NavegadorFuncEliminarRegistro(string NombreTabla, Dictionary<string, string> ClavesPrimarias)
         {
+            OdbcConnection Conexion = SeguridadMetObtenerConexion();
+            Conexion.Open();
+
+            try
+            {
+                return NavegadorFuncEliminarRegistro(NombreTabla, ClavesPrimarias, Conexion, null);
+            }
+            finally
+            {
+                SeguridadMetDesconexion(Conexion);
+            }
+        }
+
+        // Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        // SOBRECARGA TRANSACCIONAL: eliminar
+        // Ejecuta la sentencia sobre la conexión y la transacción recibidas (no abre ni cierra
+        // la conexión, no confirma nada). La versión de arriba solo abre una conexión propia y
+        // llama a esta con Transaccion = null, así el SQL vive en un solo lugar.
+        // Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
+        public bool NavegadorFuncEliminarRegistro(string NombreTabla, Dictionary<string, string> ClavesPrimarias, OdbcConnection Conexion, OdbcTransaction Transaccion)
+        {
             if (ClavesPrimarias == null || ClavesPrimarias.Count == 0) return false;
 
             ClsValidaciones.NavegadorMetValidarIdentificador(NombreTabla);
@@ -238,22 +281,12 @@ namespace CapaModelo_Navegador
                 Indice++;
             }
 
-            OdbcConnection Conexion = SeguridadMetObtenerConexion();
-            Conexion.Open();
-
-            try
+            using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL.ToString(), Conexion, Transaccion))
             {
-                using (OdbcCommand Comando = new OdbcCommand(ConsultaSQL.ToString(), Conexion))
-                {
-                    foreach (KeyValuePair<string, string> Clave in ClavesPrimarias)
-                        Comando.Parameters.AddWithValue("@pk_" + Clave.Key, Clave.Value);
+                foreach (KeyValuePair<string, string> Clave in ClavesPrimarias)
+                    Comando.Parameters.AddWithValue("@pk_" + Clave.Key, Clave.Value);
 
-                    return Comando.ExecuteNonQuery() > 0;
-                }
-            }
-            finally
-            {
-                SeguridadMetDesconexion(Conexion);
+                return Comando.ExecuteNonQuery() > 0;
             }
         }
 
