@@ -53,6 +53,7 @@
     <Compile Include="entidades\ClsColumnaInfo.cs" />
     <Compile Include="esquema\ClsEsquema.cs" />
     <Compile Include="datos\ClsRegistros.cs" />
+    <Compile Include="datos\ClsTransaccion.cs" />
     <Compile Include="validaciones\ClsValidaciones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
