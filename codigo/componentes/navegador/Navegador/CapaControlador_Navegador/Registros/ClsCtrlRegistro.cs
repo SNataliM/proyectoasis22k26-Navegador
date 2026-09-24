@@ -1,6 +1,4 @@
-﻿﻿// Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
-// Controlador original de registros. Coordina operaciones CRUD con el modelo.
-// Dylan Rene Hernandez Recinos 16/09/2026
+﻿// Dylan Rene Hernandez Recinos 16/09/2026
 using System;
 using System.Collections.Generic;
 using CapaModelo_Navegador;
@@ -59,4 +57,3 @@ namespace CapaControlador_Navegador
         }
     }
 }
-// Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
