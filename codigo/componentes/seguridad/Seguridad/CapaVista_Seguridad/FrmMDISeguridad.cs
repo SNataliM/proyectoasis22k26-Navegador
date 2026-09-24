@@ -21,6 +21,7 @@ namespace CapaVista_Seguridad
         {
             InitializeComponent();
             this.Load += FrmMDISeguridad_Load;
+            navegador1.NavegadorMetConfigurar("tblempleado", 4, 4);
         }
 
         //---------------------------------------------------------------------**INICIO ANDRE Y EVELYN
@@ -201,14 +202,14 @@ namespace CapaVista_Seguridad
 
         private void SeguridadBtnEmpleados_Click(object sender, EventArgs e)
         {
-            if (!ClsSeguridadFormHelper.SeguridadMetTieneAcceso(IdModulo: 4, IdAplicacion: 4))
-            {
-                MessageBox.Show("No tienes acceso a este módulo.",
-                    "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            //if (!ClsSeguridadFormHelper.SeguridadMetTieneAcceso(IdModulo: 4, IdAplicacion: 4))
+            //{
+            //    MessageBox.Show("No tienes acceso a este módulo.",
+            //        "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
 
-            FrmMantenimientoEmpleado Empleados = new FrmMantenimientoEmpleado();
+               Form1 Empleados = new Form1();
             Empleados.ShowDialog();
         }
 
