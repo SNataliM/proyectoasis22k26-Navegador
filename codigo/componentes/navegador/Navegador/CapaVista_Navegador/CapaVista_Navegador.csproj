@@ -131,7 +131,7 @@
   <!-- Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Compile Include="Ayudas\ValidacionDatos.cs" />
+    <Compile Include="Ayudas\ClsValidacionDatos.cs" />
   </ItemGroup>
   <!-- Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
 </Project>

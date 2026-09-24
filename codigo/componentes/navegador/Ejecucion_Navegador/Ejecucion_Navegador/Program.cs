@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 // Inicio cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 using CapaControlador_Navegador;
@@ -27,7 +24,7 @@ namespace Ejecucion_Navegador
             ClsSesionPrueba.NavegadorMetIniciarSesionPrueba();
             // Fin cambio - Mario Alberto Taracena Pérez - 0901-23-9335
 
-            Application.Run(new Form1());
+            Application.Run(new FrmPrincipal());
         }
     }
 }

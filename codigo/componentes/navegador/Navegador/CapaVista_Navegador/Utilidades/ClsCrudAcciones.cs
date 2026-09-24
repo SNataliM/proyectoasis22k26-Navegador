@@ -101,8 +101,8 @@ namespace CapaVista_Navegador
             }
 
             // Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
-            var Modelo = new ModeloRegistro(Datos, Esquema);
-            if (!new Ayudas.ValidacionDatos(Modelo).Validar())
+            var Modelo = new ClsModeloRegistro(Datos, Esquema);
+            if (!new Ayudas.ClsValidacionDatos(Modelo).NavegadorFuncValidar())
                 return false;
 
             // Recupera el comportamiento previo: omitir opcionales vacíos al persistir.

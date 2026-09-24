@@ -51,10 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="esquema\ClsCtrlEsquema.cs" />
-    <Compile Include="seguridad\ClsCtrlPermiso.cs" />
     <Compile Include="registros\ClsCtrlRegistro.cs" />
     <Compile Include="registros\ClsCtrlTabla.cs" />
-    <Compile Include="seguridad\ClsCtrlUsuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -67,8 +65,8 @@
   <!-- Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
   <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Compile Include="Validaciones\ModeloRegistro.cs" />
-    <Compile Include="Validaciones\ValidacionColumnaAttribute.cs" />
+    <Compile Include="Validaciones\ClsModeloRegistro.cs" />
+    <Compile Include="Validaciones\ClsValidacionColumnaAttribute.cs" />
   </ItemGroup>
   <!-- Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429. -->
 </Project>

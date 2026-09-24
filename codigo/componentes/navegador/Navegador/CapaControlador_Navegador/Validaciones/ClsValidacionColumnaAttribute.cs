@@ -1,4 +1,5 @@
 // Inicio - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
+// Inicio cambio - Gabriel André Guillén Pocón - 0901-23-1998: nombres ajustados a EST-10 (prefijo Cls, PascalCase).
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -7,15 +8,16 @@ using CapaModelo_Navegador;
 
 namespace CapaControlador_Navegador
 {
+    // El sufijo "Attribute" lo exige C# para poder usarse como [ClsValidacionColumna].
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class ValidacionColumnaAttribute : ValidationAttribute
+    public sealed class ClsValidacionColumnaAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext context)
+        protected override ValidationResult IsValid(object Valor, ValidationContext Contexto)
         {
-            var campo = (ModeloCampo)context.ObjectInstance;
-            string error = NavegadorFuncValidarAtributo((string)value, campo.Columna);
-            return string.IsNullOrEmpty(error) ? ValidationResult.Success
-                : new ValidationResult(error, new[] { campo.Columna == null ? "Valor" : campo.Columna.Nombre });
+            var Campo = (ClsModeloCampo)Contexto.ObjectInstance;
+            string Error = NavegadorFuncValidarAtributo((string)Valor, Campo.Columna);
+            return string.IsNullOrEmpty(Error) ? ValidationResult.Success
+                : new ValidationResult(Error, new[] { Campo.Columna == null ? "Valor" : Campo.Columna.Nombre });
         }
         private static readonly string[] _TiposTexto =
         {
@@ -191,4 +193,5 @@ namespace CapaControlador_Navegador
         }
     }
 }
+// Fin cambio - Gabriel André Guillén Pocón - 0901-23-1998
 // Fin - Roger Yankhel de Jesús Herrera Alcántara 0901-23-2429.
