@@ -62,10 +62,11 @@
          El control Navegador y su bitácora ya no viven en una solución aparte: se unificaron aquí mismo
          (una sola solución "Navegador", como pidió el catedrático) por lo que ahora se referencia
          directamente el componente Seguridad en vez de la DLL de la extinta solución "Navegador". -->
-    <Reference Include="CapaVista_Seguridad">
-      <HintPath>$(SeguridadBin)\CapaVista_Seguridad\bin\Debug\CapaVista_Seguridad.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <!-- ===================== INICIO CAMBIO COMPONENTE NAVEGADOR =====================
+         Se ELIMINO la referencia a CapaVista_Seguridad (HintPath $(SeguridadBin)\CapaVista_Seguridad\bin\Debug\CapaVista_Seguridad.dll).
+         Motivo: CapaVista_Seguridad ya referencia a CapaVista_Navegador; tener ambas creaba una dependencia circular.
+         Los permisos ahora los aplica ClsNavegadorPermisos usando solo CapaControlador_Seguridad.
+         ====================== FIN CAMBIO COMPONENTE NAVEGADOR ======================= -->
     <Reference Include="CapaControlador_Seguridad">
       <HintPath>$(SeguridadBin)\CapaControlador_Seguridad\bin\Debug\CapaControlador_Seguridad.dll</HintPath>
       <Private>True</Private>
@@ -104,6 +105,10 @@
     <!-- Inicio cambio - fusion de la solucion "Navegador" dentro de esta unica solucion MVC -->
     <Compile Include="Seguridad\ClsCrudSeguridad.cs" />
     <Compile Include="Seguridad\ClsNavegadorBitacora.cs" />
+    <!-- ===================== INICIO CAMBIO COMPONENTE NAVEGADOR =====================
+         Archivo NUEVO: reemplaza el uso de ClsSeguridadFormHelper (que era de CapaVista_Seguridad).
+         ====================== FIN CAMBIO COMPONENTE NAVEGADOR ======================= -->
+    <Compile Include="Seguridad\ClsNavegadorPermisos.cs" />
     <Compile Include="Navegador.cs">
       <SubType>UserControl</SubType>
     </Compile>
