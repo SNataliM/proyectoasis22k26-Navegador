@@ -32,7 +32,7 @@ namespace CapaVista_Navegador
             }
         }
 
-        // Devuelve la ruta del .chm extraído del recurso incrustado .
+        // Devuelve la ruta del .chm extraído del recurso incrustado.
         private static string NavegadorFuncExtraer()
         {
             string Carpeta = Path.Combine(Path.GetTempPath(), "Navegador");
