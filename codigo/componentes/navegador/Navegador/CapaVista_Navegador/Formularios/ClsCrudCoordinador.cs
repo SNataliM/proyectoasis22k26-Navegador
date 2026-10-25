@@ -1,6 +1,7 @@
 ﻿using CapaControlador_Navegador;
 using CapaModelo_Navegador;
 using CapaVista_Consultas;
+using CapaVista_Reporteador.Formas;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -438,16 +439,13 @@ namespace CapaVista_Navegador
         }
 
         // IMPRIMIR
-        // Pendiente de integración con el componente Reporteador (ver reunión del 21/09/2026: falta
-        // acordar con ellos qué parámetro exacto reciben además del código de aplicación). Por ahora
-        // solo se avisa que la función no está disponible en vez de no hacer nada al oprimir el botón.
         public void NavegadorMetImprimir()
         {
-            MessageBox.Show(
-                "La impresión de reportes está pendiente de integración con el componente Reporteador.",
-                "Imprimir",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
+            using (FrmVistaReportes FormularioReportes = new FrmVistaReportes(_Vista.NavegadorIdAplicacion,_Vista.NavegadorFuentesDeDatosReporteador))
+            {
+        
+             FormularioReportes.ShowDialog(_Vista.FindForm());
+            }
         }
     }
 }
